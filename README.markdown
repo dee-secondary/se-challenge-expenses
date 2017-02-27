@@ -1,45 +1,43 @@
 # Wave Software Development Challenge
 
 ## Set up instructions:
-brew install postgresql
-brew services start postgresql
-brew services list 
-psql
+- brew install postgresql
+- brew services start postgresql
+- brew services list 
+- psql
 
 Set up for variables needed to run the flask backend API:
- export DATABASE_URL="postgresql://localhost/wave_db"
- export APP_SETTINGS="config.DevConfig"
+- export DATABASE_URL="postgresql://localhost/wave_db"
+- export APP_SETTINGS="config.DevConfig"
 
 Install requirements:
- pip install -r requirements.txt
+- pip install -r requirements.txt
 
-Database migrations are handled through Alembic (Flask Migrate)
+### Database migrations are handled through Alembic (Flask Migrate)
 
 Initialize Alembic
- python manage.py db init
+- python manage.py db init
 
 First migration
- python manage.py db migrate
+- python manage.py db migrate
 
 Apply changes to db
- python manage.py db upgrade
-
-Change datestyle in postgresql
- SET datestyle = "ISO, MDY";
+- python manage.py db upgrade
 
 Install npm and make sure you have the lates npm:
- sudo npm install npm -g
+- sudo npm install npm -g
 
 Install npm packages from package.json for frontend
- npm install
+- npm install
 
+#### Starting app
 start flask app on localhost port 5000:
- python app.py
+- python app.py
 
 start on frontend:
- npm start
+- npm start
 
-Drop table data and reset sequence (Ideally this could be make into a command in the future):
+#### Drop table data and reset sequence (Ideally this could be make into a command in the future):
 TRUNCATE TABLE table_name(s) RESTART IDENTITY;
 
 
