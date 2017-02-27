@@ -1,59 +1,59 @@
 # Wave Software Development Challenge
-Applicants for the [Software developer](https://wave.bamboohr.co.uk/jobs/view.php?id=1) role at Wave must complete the following challenge, and submit a solution prior to the onsite interview. 
 
-The purpose of this exercise is to create something that we can work on together during the onsite. We do this so that you get a chance to collaborate with Wavers during the interview in a situation where you know something better than us (it's your code, after all!) 
+## Set up instructions:
+brew install postgresql
+brew services start postgresql
+brew services list 
+psql
 
-There isn't a hard deadline for this exercise; take as long as you need to complete it. However, in terms of total time spent actively working on the challenge, we ask that you not spend more than a few hours, as we value your time and are happy to leave things open to discussion in the onsite interview.
+Set up for variables needed to run the flask backend API:
+ export DATABASE_URL="postgresql://localhost/wave_db"
+ export APP_SETTINGS="config.DevConfig"
 
-Please use whatever programming language and framework you feel the most comfortable with.
+Install requirements:
+ pip install -r requirements.txt
 
-Feel free to email [dev.careers@waveapps.com](dev.careers@waveapps.com) if you have any questions.
+Database migrations are handled through Alembic (Flask Migrate)
 
-## Project Description
-Imagine that Wave has just acquired a new company. Unfortunately, the company has never stored their data in a database, and instead uses a comma separated text file. We need to create a way for the new subsidiary to import their data into a database. Your task is to create a web interface that accepts file uploads, and then stores them in a relational database.
+Initialize Alembic
+ python manage.py db init
 
-### What your web-based application must do:
+First migration
+ python manage.py db migrate
 
-1. Your app must accept (via a form) a comma separated file with the following columns: date, category, employee name, employee address, expense description, pre-tax amount, tax name, and tax amount.
-1. You can make the following assumptions:
- 1. Columns will always be in that order.
- 2. There will always be data in each column.
- 3. There will always be a header line.
+Apply changes to db
+ python manage.py db upgrade
 
- An example input file named `data_example.csv` is included in this repo.
+Change datestyle in postgresql
+ SET datestyle = "ISO, MDY";
 
-1. Your app must parse the given file, and store the information in a relational database.
-1. After upload, your application should display a table of the total expenses amount per-month represented by the uploaded file.
+Install npm and make sure you have the lates npm:
+ sudo npm install npm -g
 
-Your application should be easy to set up, and should run on either Linux or Mac OS X. It should not require any non open-source software.
+Install npm packages from package.json for frontend
+ npm install
 
-There are many ways that this application could be built; we ask that you build it in a way that showcases one of your strengths. If you you enjoy front-end development, do something interesting with the interface. If you like object-oriented design, feel free to dive deeper into the domain model of this problem. We're happy to tweak the requirements slightly if it helps you show off one of your strengths.
+start flask app on localhost port 5000:
+ python app.py
 
-### Documentation:
+start on frontend:
+ npm start
 
-Please modify `README.md` to add:
+Drop table data and reset sequence (Ideally this could be make into a command in the future):
+TRUNCATE TABLE table_name(s) RESTART IDENTITY;
 
-1. Instructions on how to build/run your application
-1. A paragraph or two about what you are particularly proud of in your implementation, and why.
 
-## Submission Instructions
+## Assumptions:
+- Expense name is not unique, because different employees could use the same name. Only employees, category and tax names are unique.
 
-1. Fork this project on github. You will need to create an account if you don't already have one.
-1. Complete the project as described below within your fork.
-1. Push all of your changes to your fork on github and submit a pull request. 
-1. You should also email [dev.careers@waveapps.com](dev.careers@waveapps.com) and your recruiter to let them know you have submitted a solution. Make sure to include your github username in your email (so we can match applicants with pull requests.)
+## Improvements with more time:
+- Create a Summary model and the query to gather summary data should be written in sqlalchemy and not straight sql. I ran out of time to make this improvement.
+- Write unit tests! 
+- More user friendly fronend including allowing users to upload subsequent files after uploading their first.
+- Validation for file types
+- Better error handling for both the frontend and backend API 
+- Keeping track of the currently uploaded file and providing a summary based on expenses that file, and not all expenses in the database. Could be done by introducing an source_id column to the expense model that keeps track of which expenses were created at the same time from the same source csv.
 
-## Alternate Submission Instructions (if you don't want to publicize completing the challenge)
-1. Clone the repository.
-1. Complete your project as described below within your local repository.
-1. Email a patch file to [dev.careers@waveapps.com](dev.careers@waveapps.com)
-
-## Evaluation
-Evaluation of your submission will be based on the following criteria. 
-
-1. Did you follow the instructions for submission? 
-1. Did you document your build/deploy instructions and your explanation of what you did well?
-1. Were models/entities and other components easily identifiable to the reviewer? 
-1. What design decisions did you make when designing your models/entities? Why (i.e. were they explained?)
-1. Did you separate any concerns in your application? Why or why not?
-1. Does your solution use appropriate datatypes for the problem as described? 
+## General Comments:
+- I was happy in building this app from scratch, which I haven't had a chance to do in a while. I also took this as an opportunity to learn a frontend framework (React). Have been away from frontend code in a couple of years, so it was a good chance to brush on my rust frontend skills. I was impressed at how easy it was to find packages/modules that made building a frontend pretty easy with Node/React.
+- I wish I did have more time to spend on this to polish it up. It was tough finding more time between work & research papers for school to dedicate to this project. However, I'm glad I had a chance to work on some interesting project that wasn't related to work or school!
